@@ -80,7 +80,7 @@ function setup() {
 		frames.push(frame);
 	}
 	capguy = new PIXI.extras.AnimatedSprite(frames);
-	capguy.animationSpeed = 0.5;
+	capguy.animationSpeed = 0.1;
 	capguy.play();
 	stage.addChild(capguy);
 
