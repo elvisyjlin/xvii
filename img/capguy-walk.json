@@ -1,0 +1,75 @@
+{"capguy-walk.png": {
+
+"capguy-walk-0000.png":
+{
+    "frame": {"x":0,"y":0,"w":184,"h":325},
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": {"x":0,"y":0,"w":184,"h":325},
+    "sourceSize": {"w":184,"h":325}
+},
+"capguy-walk-0001.png":
+{
+    "frame": {"x":0,"y":0,"w":184,"h":325},
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": {"x":0,"y":0,"w":184,"h":325},
+    "sourceSize": {"w":184,"h":325}
+},
+"capguy-walk-0002.png":
+{
+    "frame": {"x":0,"y":0,"w":184,"h":325},
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": {"x":0,"y":0,"w":184,"h":325},
+    "sourceSize": {"w":184,"h":325}
+},
+"capguy-walk-0003.png":
+{
+    "frame": {"x":0,"y":0,"w":184,"h":325},
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": {"x":0,"y":0,"w":184,"h":325},
+    "sourceSize": {"w":184,"h":325}
+},
+"capguy-walk-0004.png":
+{
+    "frame": {"x":0,"y":0,"w":184,"h":325},
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": {"x":0,"y":0,"w":184,"h":325},
+    "sourceSize": {"w":184,"h":325}
+},
+"capguy-walk-0005.png":
+{
+    "frame": {"x":0,"y":0,"w":184,"h":325},
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": {"x":0,"y":0,"w":184,"h":325},
+    "sourceSize": {"w":184,"h":325}
+},
+"capguy-walk-0006.png":
+{
+    "frame": {"x":0,"y":0,"w":184,"h":325},
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": {"x":0,"y":0,"w":184,"h":325},
+    "sourceSize": {"w":184,"h":325}
+},
+"capguy-walk-0007.png":
+{
+    "frame": {"x":0,"y":0,"w":184,"h":325},
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": {"x":0,"y":0,"w":184,"h":325},
+    "sourceSize": {"w":184,"h":325}
+},
+"capguy-walk-0008.png":
+{
+    "frame": {"x":0,"y":0,"w":184,"h":325},
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": {"x":0,"y":0,"w":184,"h":325},
+    "sourceSize": {"w":184,"h":325}
+}
+}
