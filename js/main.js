@@ -31,7 +31,7 @@ loader
 	.add([
 		"img/pusheen.jpg",
 		pusheen_url,
-		"img/capguy-walk.json",
+		//"img/capguy-walk.json",
 		"img/capguy-walk.png"
 	])
 	.on("progress", loadProgressHandler)
@@ -70,18 +70,14 @@ function setup() {
 	pusheen.vy = 0;
 	gameScene.addChild(pusheen);
 
-	var capguyTexture = resources["img/capguy-walk.png"].texture;
+	var capguyTexture = PIXI.Texture.fromImage("img/capguy-walk.png");
 	var frames = [];
-	frames.push(new PIXI.Rectangle(0, 0, 184, 325),
-				new PIXI.Rectangle(184, 0, 184, 325),
-				new PIXI.Rectangle(368, 0, 184, 325),
-				new PIXI.Rectangle(552, 0, 184, 325),
-				new PIXI.Rectangle(736, 0, 184, 325),
-				new PIXI.Rectangle(920, 0, 184, 325),
-				new PIXI.Rectangle(1104, 0, 184, 325),
-				new PIXI.Rectangle(1288, 0, 184, 325));
-	capguyTexture.frame = frames[0];
-	capguy = new PIXI.extras.AnimatedSprite(capguyTexture);
+	for(var i = 0; i < 8; i++) {
+		var rectangle = new PIXI.Rectangle(i * 184, 0, 184, 325);
+		var frame = new PIXI.Texture(capguyTexture, rectangle);
+		frames.push(frame);
+	}
+	capguy = new PIXI.extras.AnimatedSprite(frames);
 	capguy.animationSpeed = 0.5;
 	capguy.play();
 	stage.addChild(capguy);
