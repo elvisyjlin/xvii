@@ -31,7 +31,8 @@ loader
 	.add([
 		"img/pusheen.jpg",
 		pusheen_url,
-		"img/capguy-walk.json"
+		"img/capguy-walk.json",
+		"img/capguy-walk.png"
 	])
 	.on("progress", loadProgressHandler)
 	.load(setup);
@@ -49,7 +50,7 @@ function loadProgressHandler(loader, resource) {
   //console.log("loading: " + resource.name);
 }
 
-var gameScene, gameOverScene, pusheen;
+var gameScene, gameOverScene, pusheen, capguy;
 
 function setup() {
 	gameScene = new Container();
@@ -69,14 +70,21 @@ function setup() {
 	pusheen.vy = 0;
 	gameScene.addChild(pusheen);
 
+	var capguyTexture = resources["img/capguy-walk.png"].texture;
 	var frames = [];
-	for(var i=0; i<8; i++) {
-		frames.push(PIXI.Texture.fromFrame('capguy-walk-000' + i + '.png'))
-	}
-	var anim = new PIXI.extras.AnimatedSprite(frames);
-	anim.animationSpeed = 0.5;
-	anim.play();
-	stage.addChild(anim);
+	frames.push(new PIXI.Rectangle(0, 0, 184, 325),
+				new PIXI.Rectangle(184, 0, 184, 325),
+				new PIXI.Rectangle(368, 0, 184, 325),
+				new PIXI.Rectangle(552, 0, 184, 325),
+				new PIXI.Rectangle(736, 0, 184, 325),
+				new PIXI.Rectangle(920, 0, 184, 325),
+				new PIXI.Rectangle(1104, 0, 184, 325),
+				new PIXI.Rectangle(1288, 0, 184, 325));
+	capguyTexture.frame = frames[0];
+	capguy = new PIXI.extras.AnimatedSprite(frames);
+	capguy.animationSpeed = 0.5;
+	capguy.play();
+	stage.addChild(capguy);
 
 	//Capture the keyboard arrow keys
 	var space =keyboard(32),
@@ -113,7 +121,7 @@ function setup() {
 	down.release = function() {
 		pusheen.vy = 0;
 	};
-	
+
 	//Start the game loop
 	gameLoop();
 }

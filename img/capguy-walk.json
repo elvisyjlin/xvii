@@ -64,12 +64,13 @@
     "spriteSourceSize": {"x":0,"y":0,"w":184,"h":325},
     "sourceSize": {"w":184,"h":325}
 },
-"capguy-walk-0008.png":
-{
-    "frame": {"x":0,"y":0,"w":184,"h":325},
-    "rotated": false,
-    "trimmed": false,
-    "spriteSourceSize": {"x":0,"y":0,"w":184,"h":325},
-    "sourceSize": {"w":184,"h":325}
+"meta": {
+    "app": "https://yujinglin.github.io/eecsxvii/",
+    "version": "1.0",
+    "image": "capguy-walk.png",
+    "format": "RGBA8888",
+    "size": {"w":1472,"h":325},
+    "scale": "1",
+    "smartupdate": "$TexturePacker:SmartUpdate:2f213a6b451f9f5719773418dfe80ae8$"
 }
 }
