@@ -23,6 +23,7 @@ console.log("Renderer Size: " + renderer.width + "px x " + renderer.height + "px
 document.body.appendChild(renderer.view);
 
 var pusheen_url = "https://pbs.twimg.com/profile_images/848395594590814208/_TtPuzHs.jpg";
+var capguy_url = "https://cdn.codeandweb.com/blog/2014/11/05/animate-sprites-in-css-with-texturepacker/capguy-walk.png"
 
 //Tell the `renderer` to `render` the `stage`
 renderer.render(stage);
@@ -32,7 +33,8 @@ loader
 		"img/pusheen.jpg",
 		pusheen_url,
 		//"img/capguy-walk.json",
-		"img/capguy-walk.png"
+		"img/capguy-walk.png",
+		capguy_url
 	])
 	.on("progress", loadProgressHandler)
 	.load(setup);
@@ -70,7 +72,7 @@ function setup() {
 	pusheen.vy = 0;
 	gameScene.addChild(pusheen);
 
-	var capguyTexture = PIXI.Texture.fromImage("img/capguy-walk.png");
+	var capguyTexture = PIXI.Texture.fromImage(capguy_url);
 	var frames = [];
 	for(var i = 0; i < 8; i++) {
 		var rectangle = new PIXI.Rectangle(i * 184, 0, 184, 325);
