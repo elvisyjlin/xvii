@@ -10,8 +10,8 @@ var stage = new Container();
 
 //Create the renderer
 var renderer = autoDetectRenderer(
-  1920, 1080,
-  {antialias: false, transparent: false}
+	1920, 1080,
+	{antialias: false, transparent: false}
 );
 renderer.view.style.position = "absolute";
 renderer.view.style.display = "block";
@@ -81,7 +81,7 @@ function setup() {
 				new PIXI.Rectangle(1104, 0, 184, 325),
 				new PIXI.Rectangle(1288, 0, 184, 325));
 	capguyTexture.frame = frames[0];
-	capguy = new PIXI.extras.AnimatedSprite(frames);
+	capguy = new PIXI.extras.AnimatedSprite(capguyTexture);
 	capguy.animationSpeed = 0.5;
 	capguy.play();
 	stage.addChild(capguy);
