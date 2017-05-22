@@ -113,6 +113,9 @@ function setup() {
 	down.release = function() {
 		pusheen.vy = 0;
 	};
+	
+	//Start the game loop
+	gameLoop();
 }
 
 function gameLoop() {
@@ -137,6 +140,3 @@ function end() {
 	gameScene.visible = false;
 	gameOverScene.visible = true;
 }
-
-//Start the game loop
-gameLoop();
