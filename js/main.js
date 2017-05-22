@@ -72,7 +72,7 @@ function setup() {
 	pusheen.vy = 0;
 	gameScene.addChild(pusheen);
 
-	var capguyTexture = PIXI.Texture.fromImage(capguy_url);
+	var capguyTexture = PIXI.Texture.fromImage("img/capguy-walk.png");
 	var frames = [];
 	for(var i = 0; i < 8; i++) {
 		var rectangle = new PIXI.Rectangle(i * 184, 0, 184, 325);
