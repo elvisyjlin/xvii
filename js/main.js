@@ -68,13 +68,19 @@ var space =keyboard(32),
 	down = keyboard(40);
 
 function setup() {
+	var rendererScale = 1;
+	if(renderer.width / renderer.height > 16 / 9) {
+		rendererScale = renderer.height / gameHeight;
+	} else {
+		rendererScale = renderer.width / gameWidth;
+	}
 	gameScene = new Container();
-	gameScene.scale.set(renderer.width / gameWidth);
+	gameScene.scale.set(rendererScale);
 	stage.addChild(gameScene);
 	// console.log(gameScene.height);
 
 	gameOverScene = new Container();
-	gameOverScene.scale.set(renderer.width / gameWidth);
+	gameOverScene.scale.set(rendererScale);
 	stage.addChild(gameOverScene);
 
 	message = new Text(
