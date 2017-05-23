@@ -1,19 +1,5 @@
-//Aliases
-var Container = PIXI.Container,
-    autoDetectRenderer = PIXI.autoDetectRenderer,
-    loader = PIXI.loader,
-    resources = PIXI.loader.resources,
-    Sprite = PIXI.Sprite,
-    Texture = PIXI.Texture,
-    Rectangle = PIXI.Rectangle,
-    Graphics = PIXI.Graphics,
-    Text = PIXI.Text,
-    AnimatedSprite = PIXI.extras.AnimatedSprite;
-
-//Create a container object called the `stage`
 var stage = new Container();
 
-//Create the renderer
 var renderer = autoDetectRenderer(
 	gameWidth, gameHeight,
 	{antialias: false, transparent: false}
@@ -21,6 +7,10 @@ var renderer = autoDetectRenderer(
 renderer.view.style.position = "absolute";
 renderer.view.style.display = "block";
 renderer.autoResize = true;
+
+document.body.appendChild(renderer.view);
+
+renderer.render(stage);
 
 function resize() {
 	renderer.resize(window.innerWidth, window.innerHeight);
@@ -39,14 +29,8 @@ function resize() {
 
 window.onresize = function (event){ resize(); }
 
-//Add the canvas to the HTML document
-document.body.appendChild(renderer.view);
-
 var pusheen_url = "https://pbs.twimg.com/profile_images/848395594590814208/_TtPuzHs.jpg";
 var capguy_url = "https://cdn.codeandweb.com/blog/2014/11/05/animate-sprites-in-css-with-texturepacker/capguy-walk.png"
-
-//Tell the `renderer` to `render` the `stage`
-renderer.render(stage);
 
 loader
 	.add([
@@ -88,7 +72,7 @@ function setup() {
 
 	gameOverScene = new Container();
 	stage.addChild(gameOverScene);
-	
+
 	resize();
 
 	message = new Text(
