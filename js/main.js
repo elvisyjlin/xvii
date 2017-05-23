@@ -21,8 +21,23 @@ var renderer = autoDetectRenderer(
 renderer.view.style.position = "absolute";
 renderer.view.style.display = "block";
 renderer.autoResize = true;
-renderer.resize(window.innerWidth, window.innerHeight);
-console.log("Renderer Size: " + renderer.width + "px x " + renderer.height + "px");
+
+function resize() {
+	renderer.resize(window.innerWidth, window.innerHeight);
+	console.log("Renderer Size: " + renderer.width + "px x " + renderer.height + "px");
+	if(gameScene != null && gameOverScene != null) {
+		var rendererScale = 1;
+		if(renderer.width / renderer.height > 16 / 9) {
+			rendererScale = renderer.height / gameHeight;
+		} else {
+			rendererScale = renderer.width / gameWidth;
+		}
+		gameScene.scale.set(rendererScale);
+		gameOverScene.scale.set(rendererScale);
+	}
+}
+
+window.onresize = function (event){ resize(); }
 
 //Add the canvas to the HTML document
 document.body.appendChild(renderer.view);
@@ -68,20 +83,13 @@ var space =keyboard(32),
 	down = keyboard(40);
 
 function setup() {
-	var rendererScale = 1;
-	if(renderer.width / renderer.height > 16 / 9) {
-		rendererScale = renderer.height / gameHeight;
-	} else {
-		rendererScale = renderer.width / gameWidth;
-	}
 	gameScene = new Container();
-	gameScene.scale.set(rendererScale);
 	stage.addChild(gameScene);
-	// console.log(gameScene.height);
 
 	gameOverScene = new Container();
-	gameOverScene.scale.set(rendererScale);
 	stage.addChild(gameOverScene);
+	
+	resize();
 
 	message = new Text(
 		"Hello, Pixi.js!",
