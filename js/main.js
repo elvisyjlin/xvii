@@ -3,14 +3,19 @@ var Container = PIXI.Container,
     autoDetectRenderer = PIXI.autoDetectRenderer,
     loader = PIXI.loader,
     resources = PIXI.loader.resources,
-    Sprite = PIXI.Sprite;
+    Sprite = PIXI.Sprite,
+    Texture = PIXI.Texture,
+    Rectangle = PIXI.Rectangle,
+    Graphics = PIXI.Graphics,
+    Text = PIXI.Text,
+    AnimatedSprite = PIXI.extras.AnimatedSprite;
 
 //Create a container object called the `stage`
 var stage = new Container();
 
 //Create the renderer
 var renderer = autoDetectRenderer(
-	1920, 1080,
+	gameWidth, gameHeight,
 	{antialias: false, transparent: false}
 );
 renderer.view.style.position = "absolute";
@@ -52,97 +57,122 @@ function loadProgressHandler(loader, resource) {
   //console.log("loading: " + resource.name);
 }
 
-var gameScene, gameOverScene, pusheen, capguy;
+var timestamp_prev = null;
+var gameScene, gameOverScene, message, pusheen, capguy;
+
+//Capture the keyboard arrow keys
+var space =keyboard(32),
+	left = keyboard(37),
+	up = keyboard(38),
+	right = keyboard(39),
+	down = keyboard(40);
 
 function setup() {
 	gameScene = new Container();
+	gameScene.scale.set(renderer.width / gameWidth);
 	stage.addChild(gameScene);
+	// console.log(gameScene.height);
 
 	gameOverScene = new Container();
+	gameOverScene.scale.set(renderer.width / gameWidth);
 	stage.addChild(gameOverScene);
 
-	pusheen = new Sprite(resources[pusheen_url].texture);
-	pusheen.x = renderer.width / 2;
-	pusheen.y = renderer.height / 2;
-	pusheen.anchor.x = 0.5;
-	pusheen.anchor.y = 0.5;
-	pusheen.scale.x = 0.2;
-	pusheen.scale.y = 0.2;
-	pusheen.vx = 0;
-	pusheen.vy = 0;
-	gameScene.addChild(pusheen);
+	message = new Text(
+		"Hello, Pixi.js!",
+		{fontFamily: "Arial", fontSize: 64, fill: "white"}
+	);
+	message.position.set(300, 300);
+	gameOverScene.addChild(message);
 
-	var capguyTexture = PIXI.Texture.fromImage("img/capguy-walk.png");
+	var rect = new Graphics();
+	rect.beginFill(0x333333);
+	rect.lineStyle(5, 0xFF0000);
+	rect.drawRect(0, 0, gameWidth, gameHeight);
+	gameScene.addChild(rect);
+
+	player = new Player();
+	gameScene.addChild(player.sprite);
+
+	var capguyTexture = Texture.fromImage("img/capguy-walk.png");
 	var frames = [];
 	for(var i = 0; i < 8; i++) {
-		var rectangle = new PIXI.Rectangle(i * 184, 0, 184, 325);
-		var frame = new PIXI.Texture(capguyTexture, rectangle);
+		var rectangle = new Rectangle(i * 184, 0, 184, 325);
+		var frame = new Texture(capguyTexture, rectangle);
 		frames.push(frame);
 	}
-	capguy = new PIXI.extras.AnimatedSprite(frames);
+	capguy = new AnimatedSprite(frames);
 	capguy.animationSpeed = 0.1;
 	capguy.play();
 	gameScene.addChild(capguy);
 
-	//Capture the keyboard arrow keys
-	var space =keyboard(32),
-		left = keyboard(37),
-		up = keyboard(38),
-		right = keyboard(39),
-		down = keyboard(40);
-
 	space.press = function() {
-		gameScene.width = 100;
-		console.log(gameScene.width);
+		// Todo
 	}
 	left.press = function() {
-		pusheen.vx = -1;
+		if(player.onGround()) {
+			player.nextState(State.WALK_L);
+		}
 	};
 	left.release = function() {
-		pusheen.vx = 0;
-	};
-	up.press = function() {
-		pusheen.vy = -1;
-	};
-	up.release = function() {
-		pusheen.vy = 0;
+		if(player.onGround() && player.state == State.WALK_L) {
+			player.nextState(State.IDLE_L);
+		}
 	};
 	right.press = function() {
-		pusheen.vx = 1;
+		if(player.onGround()) {
+			player.nextState(State.WALK_R);
+		}
 	};
 	right.release = function() {
-		pusheen.vx = 0;
+		if(player.onGround() && player.state == State.WALK_R) {
+			player.nextState(State.IDLE_R);
+		}
 	};
-	down.press = function() {
-		pusheen.vy = 1;
-	};
-	down.release = function() {
-		pusheen.vy = 0;
-	};
+	up.press = function() {
+		if(player.onGround()) {
+			if(player.state % 2 == State.L) {
+				player.nextState(State.JUMP_L);
+			} else {
+				player.nextState(State.JUMP_R);
+			}
+		}
+	}
 
 	//Start the game loop
 	gameLoop();
 }
 
-function gameLoop() {
+function gameLoop(timestamp) {
+
+	var dt;
+
+	if(timestamp_prev == null) timestamp_prev = timestamp;
+
+	dt = timestamp - timestamp_prev;
+	timestamp_prev = timestamp;
+	// console.log(dt);
 
 	//Loop this function at 60 frames per second
 	requestAnimationFrame(gameLoop);
 
 	//Update the current game state
-	state();
+	state(dt);
 
 	//Render the stage to see the animation
 	renderer.render(stage);
 }
 
-function state() {
-	pusheen.rotation += 0.01;
-	pusheen.x += pusheen.vx;
-	pusheen.y += pusheen.vy;
+function state(dt) {
+	player.update(dt);
+
+	if(player.x + player.getWidth() >= gameWidth ||
+		player.x <= 0) {
+		end();
+	}
 }
 
 function end() {
+	message.text = "Game Over!";
 	gameScene.visible = false;
 	gameOverScene.visible = true;
 }
