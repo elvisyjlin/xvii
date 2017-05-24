@@ -29,7 +29,7 @@ function Player() {
 
 	this.sprites = [];
 
-	var sprite = new Sprite(resources["img/pusheen_idle.png"].texture);
+	var sprite = new Sprite(resources["img/pusheen_atk.png"].texture);
 	sprite.anchor.x = this.ax;
 	sprite.anchor.y = this.ax;
 	sprite.scale.x = this.sx;
