@@ -16,8 +16,8 @@ function Player() {
 	this.y = gameHeight / 2;
 	this.ax = 0.5;
 	this.ay = 1.0;
-	this.sx = 0.2;
-	this.sy = 0.2;
+	this.sx = 0.5;
+	this.sy = 0.5;
 	this.vx = 0;
 	this.vy = 0;
 	this.speed = 10;
