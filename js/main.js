@@ -38,7 +38,9 @@ loader
 		pusheen_url,
 		//"img/capguy-walk.json",
 		"img/capguy-walk.png",
-		capguy_url
+		capguy_url,
+		"img/pusheen_idle.png",
+		"img/pusheen_atk.png"
 	])
 	.on("progress", loadProgressHandler)
 	.load(setup);

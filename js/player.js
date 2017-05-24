@@ -1,6 +1,6 @@
 var Dir		= { L:0, R:1 };
 var State	= { IDLE: 0, WALK: 1, JUMP: 2,	ATK: 3, SKL: 4 };
-var Speed	= [ -10, 10 ];
+var DirFactor	= [ -1, 1 ];
 
 //Capture the keyboard arrow keys
 var space = keyboard(32),
@@ -15,24 +15,38 @@ function Player() {
 	this.x = gameWidth / 2;
 	this.y = gameHeight / 2;
 	this.ax = 0.5;
-	this.ay = 0.5;
+	this.ay = 1.0;
 	this.sx = 0.2;
 	this.sy = 0.2;
 	this.vx = 0;
 	this.vy = 0;
+	this.speed = 10;
 	this.dir = Dir.L;
 	this.nextDir = Dir.L;
 	this.state = State.IDLE;
 	this.nextState = State.IDLE;
 	this.dirChanged = false;
 
-	this.sprite = new Sprite(resources[pusheen_url].texture);
-	this.sprite.x = this.x;
-	this.sprite.y = this.y;
-	this.sprite.anchor.x = this.ax;
-	this.sprite.anchor.y = this.ax;
-	this.sprite.scale.x = this.sx;
-	this.sprite.scale.y = this.sy;
+	this.sprites = [];
+
+	var sprite = new Sprite(resources["img/pusheen_idle.png"].texture);
+	sprite.anchor.x = this.ax;
+	sprite.anchor.y = this.ax;
+	sprite.scale.x = this.sx;
+	sprite.scale.y = this.sy;
+	this.sprites.push(sprite);
+	this.sprites.push(sprite);
+	this.sprites.push(sprite);
+
+	var sprite = new Sprite(resources["img/pusheen_atk.png"].texture);
+	sprite.anchor.x = this.ax;
+	sprite.anchor.y = this.ax;
+	sprite.scale.x = this.sx;
+	sprite.scale.y = this.sy;
+	this.sprites.push(sprite);
+	this.sprites.push(sprite);
+
+	this.sprite = this.sprites[0];
 
 	this.registerKeys(this);
 }
@@ -42,7 +56,7 @@ Player.prototype.update = function(dt) {
 		this.vy += gravity;
 	}
 
-	this.x += this.vx;
+	this.x += this.vx * DirFactor[this.dir];
 	this.y += this.vy;
 
 	if(this.y > gameHeight - this.sprite.height / 2){
@@ -59,7 +73,7 @@ Player.prototype.update = function(dt) {
 
 	this.sprite.x = this.x;
 	this.sprite.y = this.y;
-	this.sprite.scale.x = this.sx;
+	this.sprite.scale.x = this.sx * DirFactor[this.dir];
 }
 
 Player.prototype.next = function() {
@@ -86,20 +100,21 @@ Player.prototype.toNextState = function(nextState) {
 			this.vx = 0;
 			break;
 		case State.WALK:
-			this.vx = Speed[this.dir];
+			this.vx = this.speed;
 			break;
 		case State.JUMP:
 			this.vy = -20;
 			break;
 		case State.ATK:
-			nextState = this.state;
+			// nextState = this.state;
 			break;
 		case State.SKL:
-			nextState = this.state;
+			// nextState = this.state;
 			break;
 		default:
 		console.log('Unknown state code: ' + state);
 	}
+	this.sprite = this.sprites[this.state];
 	this.state = nextState;
 	this.nextState = nextState;
 }
