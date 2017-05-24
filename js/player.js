@@ -98,7 +98,7 @@ Player.prototype.update = function(dt) {
 
 	this.sprites[this.state].x = this.x;
 	this.sprites[this.state].y = this.y;
-	this.sprites[this.state].scale.x = this.sx * DirFactor[this.dir];
+	this.sprites[this.state].scale.x = this.sx * (-DirFactor[this.dir]);
 
 	// console.log(this.x+"/"+this.y);
 }
@@ -116,7 +116,6 @@ Player.prototype.next = function() {
 
 Player.prototype.toNextDir = function(nextDir) {
 	this.dir = nextDir;
-	this.sx = -this.sx;
 	this.dirChanged = true;
 }
 
