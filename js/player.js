@@ -3,11 +3,8 @@ var State	= { IDLE: 0, WALK: 1, JUMP: 2,	ATK: 3, SKL: 4 };
 var DirFactor	= [ -1, 1 ];
 
 //Capture the keyboard arrow keys
-var space = keyboard(32),
-	left = keyboard(37),
-	up = keyboard(38),
-	right = keyboard(39),
-	down = keyboard(40);
+var key = {space: keyboard(32), left: keyboard(37), up: keyboard(38),
+	right: keyboard(39), down: keyboard(40), z: keyboard(90), x: keyboard(88), c: keyboard(67)}
 
 function Player() {
 	this.hp = 100;
@@ -52,11 +49,7 @@ function Player() {
 	(function (instance) {
 		animatedSprite.onComplete = function() {
 			console.log('complete');
-			if(left.isDown || right.isDown) {
-				instance.toNextState(State.WALK);
-			} else {
-				instance.toNextState(State.IDLE);
-			}
+			instance.actionFinish();
 		};
 	})(this);
 	animatedSprite.anchor.x = this.ax;
@@ -64,6 +57,25 @@ function Player() {
 	animatedSprite.scale.x = this.sx;
 	animatedSprite.scale.y = this.sy;
 	this.sprites.push(animatedSprite);
+	frames = [];
+	frame = resources["img/pusheen_skl.png"].texture;
+	for(var i = 0; i < 32; i++) {
+		frames.push(frame);
+	}
+	animatedSprite = new AnimatedSprite(frames);
+	animatedSprite.animationSpeed = 0.1;
+	animatedSprite.loop = false;
+	animatedSprite.isAnimated = true;
+	(function (instance) {
+		animatedSprite.onComplete = function() {
+			console.log('complete');
+			instance.actionFinish();
+		};
+	})(this);
+	animatedSprite.anchor.x = this.ax;
+	animatedSprite.anchor.y = this.ay;
+	animatedSprite.scale.x = this.sx;
+	animatedSprite.scale.y = this.sy;
 	this.sprites.push(animatedSprite);
 
 	for(s of this.sprites) {
@@ -87,11 +99,7 @@ Player.prototype.update = function(dt) {
 	if(this.y > gameHeight){
 		this.vy = 0;
 		this.y = gameHeight;
-		if(left.isDown || right.isDown) {
-			this.toNextState(State.WALK);
-		} else {
-			this.toNextState(State.IDLE);
-		}
+		this.actionFinish();
 	}
 
 	this.next();
@@ -157,6 +165,14 @@ Player.prototype.stateLocked = function() {
 	return this.state != State.IDLE && this.state != State.WALK;
 }
 
+Player.prototype.actionFinish = function() {
+	if(key.left.isDown || key.right.isDown) {
+		this.toNextState(State.WALK);
+	} else {
+		this.toNextState(State.IDLE);
+	}
+}
+
 Player.prototype.getWidth = function() {
 	return this.sprites[this.state].width;
 }
@@ -167,28 +183,31 @@ Player.prototype.getHeight = function() {
 
 Player.prototype.registerKeys = function(instance) {
 
-	space.press = function() {
+	key.c.press = function() {
 		instance.nextState = State.ATK;
 	};
-	left.press = function() {
+	key.x.press = function() {
+		instance.nextState = State.SKL;
+	};
+	key.left.press = function() {
 		instance.nextDir = Dir.L;
 		instance.nextState = State.WALK;
 	};
-	left.release = function() {
+	key.left.release = function() {
 		if(instance.dir == Dir.L) {
 			instance.nextState = State.IDLE;
 		}
 	};
-	right.press = function() {
+	key.right.press = function() {
 		instance.nextDir = Dir.R;
 		instance.nextState = State.WALK;
 	};
-	right.release = function() {
+	key.right.release = function() {
 		if(instance.dir == Dir.R) {
 			instance.nextState = State.IDLE;
 		}
 	};
-	up.press = function() {
+	key.up.press = function() {
 		instance.nextState = State.JUMP;
 	};
 }

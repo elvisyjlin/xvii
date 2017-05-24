@@ -40,7 +40,8 @@ loader
 		"img/capguy-walk.png",
 		capguy_url,
 		"img/pusheen_idle.png",
-		"img/pusheen_atk.png"
+		"img/pusheen_atk.png",
+		"img/pusheen_skl.png"
 	])
 	.on("progress", loadProgressHandler)
 	.load(setup);
