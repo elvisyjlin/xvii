@@ -59,13 +59,6 @@ function loadProgressHandler(loader, resource) {
 var timestamp_prev = null;
 var gameScene, gameOverScene, message, pusheen, capguy;
 
-//Capture the keyboard arrow keys
-var space =keyboard(32),
-	left = keyboard(37),
-	up = keyboard(38),
-	right = keyboard(39),
-	down = keyboard(40);
-
 function setup() {
 	gameScene = new Container();
 	stage.addChild(gameScene);
@@ -103,39 +96,6 @@ function setup() {
 	capguy.play();
 	gameScene.addChild(capguy);
 
-	space.press = function() {
-		// Todo
-	}
-	left.press = function() {
-		if(player.onGround()) {
-			player.nextState(State.WALK_L);
-		}
-	};
-	left.release = function() {
-		if(player.onGround() && player.state == State.WALK_L) {
-			player.nextState(State.IDLE_L);
-		}
-	};
-	right.press = function() {
-		if(player.onGround()) {
-			player.nextState(State.WALK_R);
-		}
-	};
-	right.release = function() {
-		if(player.onGround() && player.state == State.WALK_R) {
-			player.nextState(State.IDLE_R);
-		}
-	};
-	up.press = function() {
-		if(player.onGround()) {
-			if(player.state % 2 == State.L) {
-				player.nextState(State.JUMP_L);
-			} else {
-				player.nextState(State.JUMP_R);
-			}
-		}
-	}
-
 	//Start the game loop
 	gameLoop();
 }
@@ -163,8 +123,7 @@ function gameLoop(timestamp) {
 function state(dt) {
 	player.update(dt);
 
-	if(player.x + player.getWidth() >= gameWidth ||
-		player.x <= 0) {
+	if(player.x + player.getWidth() >= gameWidth || player.x <= 0) {
 		end();
 	}
 }

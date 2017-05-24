@@ -1,7 +1,17 @@
-var State = {L:0, R:1, IDLE_L: 2, IDLE_R: 3, WALK_L: 4, WALK_R: 5, JUMP_L: 6, JUMP_R: 7};
+var Dir		= { L:0, R:1 };
+var State	= { IDLE: 0, WALK: 1, JUMP: 2,	ATK: 3, SKL: 4 };
+var Speed	= [ -10, 10 ];
+
+//Capture the keyboard arrow keys
+var space = keyboard(32),
+	left = keyboard(37),
+	up = keyboard(38),
+	right = keyboard(39),
+	down = keyboard(40);
 
 function Player() {
-	this.State = {IDLE_L: 0, IDLE_R: 1, WALK_L: 2, WALK_R: 3};
+	this.hp = 100;
+	this.mp = 100;
 	this.x = gameWidth / 2;
 	this.y = gameHeight / 2;
 	this.ax = 0.5;
@@ -10,7 +20,11 @@ function Player() {
 	this.sy = 0.2;
 	this.vx = 0;
 	this.vy = 0;
-	this.state = this.State.IDLE_R;
+	this.dir = Dir.L;
+	this.nextDir = Dir.L;
+	this.state = State.IDLE;
+	this.nextState = State.IDLE;
+	this.dirChanged = false;
 
 	this.sprite = new Sprite(resources[pusheen_url].texture);
 	this.sprite.x = this.x;
@@ -19,59 +33,83 @@ function Player() {
 	this.sprite.anchor.y = this.ax;
 	this.sprite.scale.x = this.sx;
 	this.sprite.scale.y = this.sy;
+
+	this.registerKeys(this);
 }
 
 Player.prototype.update = function(dt) {
 	if(this.y < gameHeight - this.sprite.height / 2) {
 		this.vy += gravity;
-	} else if(this.y > gameHeight - this.sprite.height / 2){
-		this.vy = 0;
-		this.y = gameHeight - this.sprite.height / 2;
-		if(this.vx < 0 && left.isDown) {
-			this.nextState(State.WALK_L);
-		} else if(this.vx > 0 && right.isDown) {
-			this.nextState(State.WALK_R);
-		} else if(this.state % 2 == State.L) {
-			this.nextState(State.IDLE_L);
-		} else {
-			this.nextState(State.IDLE_R);
-		}
 	}
+
 	this.x += this.vx;
 	this.y += this.vy;
+
+	if(this.y > gameHeight - this.sprite.height / 2){
+		this.vy = 0;
+		this.y = gameHeight - this.sprite.height / 2;
+		if(left.isDown || right.isDown) {
+			this.toNextState(State.WALK);
+		} else {
+			this.toNextState(State.IDLE);
+		}
+	}
+
+	this.next();
+
 	this.sprite.x = this.x;
 	this.sprite.y = this.y;
+	this.sprite.scale.x = this.sx;
 }
 
-Player.prototype.nextState = function(state) {
-	console.log('Next state: ' + state);
-	this.state = state;
-	switch(state) {
-		case State.IDLE_L:
+Player.prototype.next = function() {
+	var locked = this.stateLocked();
+	this.dirChanged = false;
+	if(this.nextDir != this.dir && !locked) {
+		this.toNextDir(this.nextDir);
+	}
+	if(this.dirChanged || this.nextState != this.state && !locked) {
+		this.toNextState(this.nextState)
+	}
+}
+
+Player.prototype.toNextDir = function(nextDir) {
+	this.dir = nextDir;
+	this.sx = -this.sx;
+	this.dirChanged = true;
+}
+
+Player.prototype.toNextState = function(nextState) {
+	console.log('Next state: ' + nextState);
+	switch(nextState) {
+		case State.IDLE:
 			this.vx = 0;
 			break;
-		case State.IDLE_R:
-			this.vx = 0;
+		case State.WALK:
+			this.vx = Speed[this.dir];
 			break;
-		case State.WALK_L:
-			this.vx = -3;
+		case State.JUMP:
+			this.vy = -20;
 			break;
-		case State.WALK_R:
-			this.vx = 3;
+		case State.ATK:
+			nextState = this.state;
 			break;
-		case State.JUMP_L:
-			this.vy = -10;
-			break;
-		case State.JUMP_R:
-			this.vy = -10;
+		case State.SKL:
+			nextState = this.state;
 			break;
 		default:
-			console.log('Unknown state code: ' + state);
+		console.log('Unknown state code: ' + state);
 	}
+	this.state = nextState;
+	this.nextState = nextState;
 }
 
 Player.prototype.onGround = function() {
 	return this.y == gameHeight - this.sprite.height / 2;
+}
+
+Player.prototype.stateLocked = function() {
+	return this.state != State.IDLE && this.state != State.WALK;
 }
 
 Player.prototype.getWidth = function() {
@@ -80,4 +118,32 @@ Player.prototype.getWidth = function() {
 
 Player.prototype.getHeight = function() {
 	return this.sprite.height;
+}
+
+Player.prototype.registerKeys = function(instance) {
+
+	space.press = function() {
+		instance.nextState = State.ATK;
+	}
+	left.press = function() {
+		instance.nextDir = Dir.L;
+		instance.nextState = State.WALK;
+	};
+	left.release = function() {
+		if(instance.dir == Dir.L) {
+			instance.nextState = State.IDLE;
+		}
+	};
+	right.press = function() {
+		instance.nextDir = Dir.R;
+		instance.nextState = State.WALK;
+	};
+	right.release = function() {
+		if(instance.dir == Dir.R) {
+			instance.nextState = State.IDLE;
+		}
+	};
+	up.press = function() {
+		instance.nextState = State.JUMP;
+	};
 }
