@@ -72,7 +72,12 @@ function setup() {
 	resize();
 
 	message = new Text(
-		"Hello, Pixi.js!",
+		"Hello, Pixi.js!\n\n" + 
+		"Instruction:\n" +
+		"Left & Right - Control Pusheen\n" +
+		"Up - Jump\n" +
+		"C - Feel shy\n" +
+		"X - Unicorn!!!\n",
 		{fontFamily: "Arial", fontSize: 64, fill: "white"}
 	);
 	message.position.set(300, 300);
