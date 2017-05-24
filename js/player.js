@@ -1,5 +1,5 @@
-var Dir		= { L:0, R:1 };
-var State	= { IDLE: 0, WALK: 1, JUMP: 2,	ATK: 3, SKL: 4 };
+var Dir			= { L:0, R:1 };
+var State		= { IDLE: 0, WALK: 1, JUMP: 2,	ATK: 3, SKL: 4 };
 var DirFactor	= [ -1, 1 ];
 
 //Capture the keyboard arrow keys
@@ -140,9 +140,11 @@ Player.prototype.toNextState = function(nextState) {
 			this.vy = -20;
 			break;
 		case State.ATK:
+			this.vx = 0;
 			// nextState = this.state;
 			break;
 		case State.SKL:
+			this.vx = 0;
 			// nextState = this.state;
 			break;
 		default:
