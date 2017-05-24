@@ -86,6 +86,11 @@ function Player() {
 	this.sprites[this.state].visible = true;
 
 	this.registerKeys(this);
+
+	this.circle = new Graphics();
+	this.circle.lineStyle(4, 0x91CF46, 1);
+	this.circle.drawCircle(0, 0, 25);
+	gameScene.addChild(this.circle);
 }
 
 Player.prototype.update = function(dt) {
@@ -107,6 +112,9 @@ Player.prototype.update = function(dt) {
 	this.sprites[this.state].x = this.x;
 	this.sprites[this.state].y = this.y;
 	this.sprites[this.state].scale.x = this.sx * (-DirFactor[this.dir]);
+
+	this.circle.x = this.x;
+	this.circle.y = this.y;
 
 	// console.log(this.x+"/"+this.y);
 }
