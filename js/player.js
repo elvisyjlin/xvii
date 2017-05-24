@@ -29,39 +29,64 @@ function Player() {
 
 	this.sprites = [];
 
-	var sprite = new Sprite(resources["img/pusheen_atk.png"].texture);
+	var sprite = new Sprite(resources["img/pusheen_idle.png"].texture);
 	sprite.anchor.x = this.ax;
-	sprite.anchor.y = this.ax;
+	sprite.anchor.y = this.ay;
 	sprite.scale.x = this.sx;
 	sprite.scale.y = this.sy;
+	sprite.isAnimated = false;
 	this.sprites.push(sprite);
 	this.sprites.push(sprite);
 	this.sprites.push(sprite);
 
-	var sprite = new Sprite(resources["img/pusheen_atk.png"].texture);
-	sprite.anchor.x = this.ax;
-	sprite.anchor.y = this.ax;
-	sprite.scale.x = this.sx;
-	sprite.scale.y = this.sy;
-	this.sprites.push(sprite);
-	this.sprites.push(sprite);
+	var capguyTexture = Texture.fromImage("img/capguy-walk.png");
+	var frames = [];
+	var frame = resources["img/pusheen_atk.png"].texture;
+	for(var i = 0; i < 8; i++) {
+		frames.push(frame);
+	}
+	var animatedSprite = new AnimatedSprite(frames);
+	animatedSprite.animationSpeed = 0.1;
+	animatedSprite.loop = false;
+	animatedSprite.isAnimated = true;
+	(function (instance) {
+		animatedSprite.onComplete = function() {
+			console.log('complete');
+			if(left.isDown || right.isDown) {
+				instance.toNextState(State.WALK);
+			} else {
+				instance.toNextState(State.IDLE);
+			}
+		};
+	})(this);
+	animatedSprite.anchor.x = this.ax;
+	animatedSprite.anchor.y = this.ay;
+	animatedSprite.scale.x = this.sx;
+	animatedSprite.scale.y = this.sy;
+	this.sprites.push(animatedSprite);
+	this.sprites.push(animatedSprite);
 
-	this.sprite = this.sprites[0];
+	for(s of this.sprites) {
+		gameScene.addChild(s);
+		s.visible = false;
+	}
+
+	this.sprites[this.state].visible = true;
 
 	this.registerKeys(this);
 }
 
 Player.prototype.update = function(dt) {
-	if(this.y < gameHeight - this.sprite.height / 2) {
+	if(this.y < gameHeight) {
 		this.vy += gravity;
 	}
 
 	this.x += this.vx * DirFactor[this.dir];
 	this.y += this.vy;
 
-	if(this.y > gameHeight - this.sprite.height / 2){
+	if(this.y > gameHeight){
 		this.vy = 0;
-		this.y = gameHeight - this.sprite.height / 2;
+		this.y = gameHeight;
 		if(left.isDown || right.isDown) {
 			this.toNextState(State.WALK);
 		} else {
@@ -71,9 +96,11 @@ Player.prototype.update = function(dt) {
 
 	this.next();
 
-	this.sprite.x = this.x;
-	this.sprite.y = this.y;
-	this.sprite.scale.x = this.sx * DirFactor[this.dir];
+	this.sprites[this.state].x = this.x;
+	this.sprites[this.state].y = this.y;
+	this.sprites[this.state].scale.x = this.sx * DirFactor[this.dir];
+
+	// console.log(this.x+"/"+this.y);
 }
 
 Player.prototype.next = function() {
@@ -94,7 +121,7 @@ Player.prototype.toNextDir = function(nextDir) {
 }
 
 Player.prototype.toNextState = function(nextState) {
-	console.log('Next state: ' + nextState);
+	// console.log('Next state: ' + nextState);
 	switch(nextState) {
 		case State.IDLE:
 			this.vx = 0;
@@ -114,13 +141,17 @@ Player.prototype.toNextState = function(nextState) {
 		default:
 		console.log('Unknown state code: ' + state);
 	}
-	this.sprite = this.sprites[this.state];
+	this.sprites[this.state].visible = false;
 	this.state = nextState;
 	this.nextState = nextState;
+	this.sprites[this.state].visible = true;
+	if(this.sprites[this.state].isAnimated) {
+		this.sprites[this.state].gotoAndPlay(0);
+	}
 }
 
 Player.prototype.onGround = function() {
-	return this.y == gameHeight - this.sprite.height / 2;
+	return this.y == gameHeight - this.sprites[this.state].height / 2;
 }
 
 Player.prototype.stateLocked = function() {
@@ -128,18 +159,18 @@ Player.prototype.stateLocked = function() {
 }
 
 Player.prototype.getWidth = function() {
-	return this.sprite.width;
+	return this.sprites[this.state].width;
 }
 
 Player.prototype.getHeight = function() {
-	return this.sprite.height;
+	return this.sprites[this.state].height;
 }
 
 Player.prototype.registerKeys = function(instance) {
 
 	space.press = function() {
 		instance.nextState = State.ATK;
-	}
+	};
 	left.press = function() {
 		instance.nextDir = Dir.L;
 		instance.nextState = State.WALK;

@@ -84,7 +84,6 @@ function setup() {
 	gameScene.addChild(rect);
 
 	player = new Player();
-	gameScene.addChild(player.sprite);
 
 	var capguyTexture = Texture.fromImage("img/capguy-walk.png");
 	var frames = [];
